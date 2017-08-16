@@ -10,7 +10,7 @@ ENDDOC
 fi
 
 #cd $(echo "$0" | sed 's=/[^/]*$==g')
-workdir=$(echo "$0" | sed 's=/[^/]*$==g')
+workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
 origdir=`pwd`
 outdir=`pwd`
 
@@ -22,23 +22,21 @@ songs=`mktemp`
 
 
 echo '###########################'
-echo "PROCESSING SONGBOOK: $head"
+echo "PROCESSING SONGBOOK: $name with $head $version"
 echo '###########################'
 
-cd "$workdir"
-cat > $songs
-
+cat | xargs realpath > $songs
 echo "$version" > $workdir/ver.tex
 cat "$head" > $workdir/head.tex
+cd "$workdir"
 
 for colmode in 3cols adaptive
 do
+  echo "PROCESSING MODE $colmode" > /dev/tty
   cat $songs | while read file # file in $input/*
   do
-    file="$origdir/$file"
     if [ -f $file ]
     then
-      echo "PROCESSING $file" > /dev/tty
       width=$(cat $file | sed 's/\[[^]]*\]//g' | wc -L)
       [ $width -lt $colwidth -o $width -gt $(( $colwidth + 5 )) ] || echo "$file is just a bit over colwidth!" > /dev/tty
       cols=$(( ( $colwidth /  $width ) + 1 ))
@@ -54,6 +52,8 @@ do
     else
       echo FILE NOT FOUND: $file at pwd $(pwd) > /dev/tty
     fi
+    echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
+    echo "PROCESSING $file" > /dev/tty
   done > "$workdir/content-$colmode.tex"
 done
 
@@ -63,7 +63,7 @@ pdflatex template-a5-booklet.tex && \
 pdflatex template-a4.tex 
 
 
-for i in template*pdf
+for i in template*pdf template*dvi
 do
   mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
 done
