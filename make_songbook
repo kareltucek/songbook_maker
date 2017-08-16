@@ -25,7 +25,7 @@ echo '###########################'
 echo "PROCESSING SONGBOOK: $name with $head $version"
 echo '###########################'
 
-cat | xargs realpath > $songs
+cat | grep -v '[/]\..*.swp' | xargs realpath > $songs
 echo "$version" > $workdir/ver.tex
 cat "$head" > $workdir/head.tex
 cd "$workdir"
@@ -33,6 +33,7 @@ cd "$workdir"
 for colmode in 3cols adaptive
 do
   echo "PROCESSING MODE $colmode" > /dev/tty
+  echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
   cat $songs | while read file # file in $input/*
   do
     if [ -f $file ]
@@ -52,7 +53,6 @@ do
     else
       echo FILE NOT FOUND: $file at pwd $(pwd) > /dev/tty
     fi
-    echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
     echo "PROCESSING $file" > /dev/tty
   done > "$workdir/content-$colmode.tex"
 done
