@@ -1,0 +1,5 @@
+call setreg('a', '$BvhEdji[]Pk')
+call setreg('s', '/> *[^ ]@a')
+call setreg('d', ':%s/^/  /g:%s/$/                                                                              /ggg')
+call setreg('f', ':g/^>/ normal dd:%s/^ *//g:%s/ *$//ggg')
+
