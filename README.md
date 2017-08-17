@@ -3,7 +3,7 @@ Songbook maker
 
 This repository provides scripts which I use to make printable songbooks out of songs using latex package.
 
-*NOTE*: Using content of this repository may be pain without any tex knowledge or without linux experience! You have been warned!
+*NOTE*: Using content of this repository may be painful without any tex knowledge or without any linux experience!
 
 Input
 =====
@@ -87,4 +87,19 @@ This allows simple creation of difference songbooks for printing. My full build 
         mv output-a5.pdf ./dodatky-zpevnik-a5-diff4.pdf
         mv output-a5-booklet.pdf dodatky-zpevnik-a5-booklet-diff4.pdf
         mv output-a4.pdf dodatky-zpevnik-a4-diff4.pdf
+
+Debug
+=====
+Even though I am trying to sanitize inputs as much as possible, the build sometimes fails. If you are not a TEX expert, you may wish to simply limit the number of input songs (like 'find songs | head -n 15 | make_songbook...') in order to find the song which causes problems. When you have it, search for unusual characters and either (if you need them), fix the TEX template in this project or fix the file or add another sanitization into the make_songbook script. 
+
+If you are a tex expert, you may wish to meddle with tex. The script basically takes the files and rewrites them into tex notation into two files named content*tex (in project's directory, not in the working directory). Then, latex is executed on one of the templates.
+
+Format conversions and Utils
+============================
+Unfortunately, most chords are in pure plain text format. Bracket export is one the most standard one, but still rarely provided and due to the nature of the problem, automatic conversion is not easily achievable. For this reason I also provide a set of tools which I use for conversions between the formats. Details are to be found in folder utils.
+
+
+
+
+
 
