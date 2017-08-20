@@ -69,6 +69,6 @@ do
 done
 
 
-rm $songs cbtitle.* *.log content*tex
+rm $songs cbtitle.* *.log content*tex ver.tex
 ls | grep 'template.*' | grep -v '.tex$' | xargs rm
 
