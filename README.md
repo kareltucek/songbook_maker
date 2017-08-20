@@ -97,7 +97,7 @@ If you are a tex expert, you may wish to meddle with tex. The script basically t
 
 Format conversions and Utils
 ============================
-Unfortunately, most chords are in pure plain text format. Bracket export is one the most standard one, but still rarely provided and due to the nature of the problem, automatic conversion is not easily achievable. For this reason I also provide a set of tools which I use for conversions between the formats. Details are to be found in folder utils.
+Unfortunately, most tab/chord pages provide only pure plain text format. Bracket export is one the most standard ones, but still rarely provided and due to the nature of the problem, automatic conversion is not easily achievable. For this reason I also provide a set of tools which I use for conversions between the formats. Details are to be found in folder utils.
 
 
 
