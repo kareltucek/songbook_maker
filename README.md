@@ -15,6 +15,7 @@ Currently, the script is sensitive to bad number of empty lines - e.g., there sh
 Hashes denote comments and are removed from the file before parsing.
 
 e.g.
+
         Drunken Sailor
         ==============
         [Dm]What'll we do with a [Dm]drunken sailor,
