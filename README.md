@@ -28,6 +28,8 @@ e.g.
         Hoo ray and up she rises
         Earl-aye in the morning
 
+Formal definition of format is provided in included FORMAT.md file. The format is meant mainly as a proposal intended for sharing of song databases.
+
 Output
 ======
 Output is writtent into the working directory and consists of:
