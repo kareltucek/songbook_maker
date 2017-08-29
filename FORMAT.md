@@ -18,30 +18,30 @@ adds some further restrictions which should simplify creation of export tools.
 
 Quick, self-defining example:
 
-  ##title: Drunken Sailor
-  ##interpret: Irish Rovers
-  ##author: unknown
-  ==============
-  [Ami]What shall we do with a drunken sailor
-  wh[G]at shall we do with a drunken sailor
-  wh[Ami]at shall we do with a drunken sailor
-  early [Emi]in the m[Ami]orning?
+    ##title: Drunken Sailor
+    ##interpret: Irish Rovers
+    ##author: unknown
+    ==============
+    [Ami]What shall we do with a drunken sailor
+    wh[G]at shall we do with a drunken sailor
+    wh[Ami]at shall we do with a drunken sailor
+    early [Emi]in the m[Ami]orning?
 
-  R: H[Ami]ooray and up she rises h[G]ooray and up she rises
-  h[Ami]ooray and up she rises early [Emi]in the m[Ami]orning.
+    R: H[Ami]ooray and up she rises h[G]ooray and up she rises
+    h[Ami]ooray and up she rises early [Emi]in the m[Ami]orning.
 
-  Give 'im a dose of salt and water...
+    Give 'im a dose of salt and water...
 
-  Stick on his back a mustard plaster...
+    Stick on his back a mustard plaster...
 
-  Keep him there and make 'im bail 'er...
+    Keep him there and make 'im bail 'er...
 
-  #Commented out, this song would otherwise bee too long...
-  #Put/chuck him in the long boat 'til he's sober...
-  #
-  #Put him in the long-boat and make him bail her...
-  #
-  What shall we do with a drunken sailor?..
+    #Commented out, this song would otherwise bee too long...
+    #Put/chuck him in the long boat 'til he's sober...
+    #
+    #Put him in the long-boat and make him bail her...
+    #
+    What shall we do with a drunken sailor?..
 
 
 Non-strict definition:
