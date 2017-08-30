@@ -1,74 +1,150 @@
 #!/bin/bash
-if [ $# -lt 2 ]
-then
-  cat << ENDDOC
-syntax: <output name> <path to head.tex template> <version>
-List of song-files is read from stdin.
-Files are outputted into the working directory.
-ENDDOC
+
+function help() {
+  echo "syntax: make_songbook [options] <output name> <path to head.tex template> <version>"
+  echo ""
+  echo "Reads list of songs from stdin, builds a songbook out of them in its directory and outputs creted songbooks into the working directory."
+  echo ""
+  echo "args:"
+  echo "output name - name used currently only as output file prefix"
+  echo "header file - a .tex file containing songbook's introduction (see included example file)"
+  echo "version - any string denoting version of the songbook"
+  echo ""
+  echo "valid options:"
+  echo "  --debug        tests songs one by one"
   exit 1
-fi
+}
 
-#cd $(echo "$0" | sed 's=/[^/]*$==g')
-workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
-origdir=`pwd`
-outdir=`pwd`
+function read_args() {
+  if [ $# -lt 2 ]
+  then
+    help
+  fi
 
-name="$1"
-head="$2"
-version="$3"
-colwidth=45
-songs=`mktemp`
+  case $1 in 
+    --debug)
+      mode=test
+      shift
+      ;;
+    *)
+      mode=normal
+      ;;
+  esac
 
+  workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
+  origdir=`pwd`
+  outdir=`pwd`
 
-echo '###########################'
-echo "PROCESSING SONGBOOK: $name with $head $version"
-echo '###########################'
+  name="$1"
+  head="$2"
+  version="$3"
+  colwidth=45
+  songs=`mktemp`
+}
 
-cat | grep -v '[/]\..*.swp' | xargs realpath > $songs
-echo "$version" > $workdir/ver.tex
-cat "$head" > $workdir/head.tex
-cd "$workdir"
+function prepare_environment() {
+  cat | grep -v '[/]\..*.swp' | xargs realpath > $songs
+  echo "$version" > $workdir/ver.tex
+  cat "$head" > $workdir/head.tex
+  cd "$workdir"
+}
 
-for colmode in 3cols adaptive
-do
-  echo "PROCESSING MODE $colmode" > /dev/tty
-  echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
-  cat $songs | while read file # file in $input/*
+function process_file() {
+  if [ -f $file ]
+  then
+    [ $mode == "test" ] || printf "PROCESSING $file" > /dev/tty
+    width=$(cat $file | sed 's/\[[^]]*\]//g' | wc -L)
+    [ $width -lt $colwidth -o $width -gt $(( $colwidth + 5 )) ] || printf "... is just a bit over colwidth! ..." > /dev/tty
+    cols=$(( ( $colwidth /  $width ) + 1 ))
+    [ $colmode == 3cols ] && cols=3
+    echo "\\songcolumns{$cols}"
+    cat $file | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | grep -v '^#' | sed 's/[#[]/\\&/g' | awk '
+    BEGIN {first=1;}
+    /===/ {printf("\\beginverse\n"); next}
+    /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
+    // { if(first ==1){first = 0; printf("\\beginsong{%s}\n", $0)} else printf("%s\n", $0) }
+    END { printf("\n\\endverse\n\\endsong\n\n\n"); }
+    ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
+    [ $mode == "test" ] || printf "\n" > /dev/tty
+  else
+    echo FILE NOT FOUND: $file at pwd $(pwd) > /dev/tty
+  fi
+}
+
+function process_songbook() {
+  for colmode in 3cols adaptive
   do
-    if [ -f $file ]
+    echo "PROCESSING MODE $colmode" > /dev/tty
+    echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
+    cat $songs | 
+    while read file 
+    do
+      process_file
+    done > "$workdir/content-$colmode.tex"
+  done
+
+  latex template-a5.tex  || cleanup 1
+  pdflatex template-a5.tex  || cleanup 1
+  pdflatex template-a5-booklet.tex || cleanup 1
+  pdflatex template-a4.tex || cleanup 1
+}
+
+function test_song() {
+  printf "TESTING SONGFILE $file..."
+  if [ -f "$file" ]
+  then
+    process_file > "$workdir/content-$colmode.tex"
+    if pdflatex -interaction=batchmode template-a5.tex > /dev/null
     then
-      width=$(cat $file | sed 's/\[[^]]*\]//g' | wc -L)
-      [ $width -lt $colwidth -o $width -gt $(( $colwidth + 5 )) ] || echo "$file is just a bit over colwidth!" > /dev/tty
-      cols=$(( ( $colwidth /  $width ) + 1 ))
-      [ $colmode == 3cols ] && cols=3
-      echo "\\songcolumns{$cols}"
-      cat $file | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | grep -v '^#' | sed 's/[#[]/\\&/g' | awk '
-      BEGIN {first=1;}
-      /===/ {printf("\\beginverse\n"); next}
-      /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
-      // { if(first ==1){first = 0; printf("\\beginsong{%s}\n", $0)} else printf("%s\n", $0) }
-      END { printf("\n\\endverse\n\\endsong\n\n\n"); }
-      ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
+      echo " OK"
     else
-      echo FILE NOT FOUND: $file at pwd $(pwd) > /dev/tty
+      echo " FAILED" 
     fi
-    echo "PROCESSING $file" > /dev/tty
-  done > "$workdir/content-$colmode.tex"
-done
+  else
+    echo " NOT FOUND" 
+  fi
+}
 
-latex template-a5.tex  && \
-pdflatex template-a5.tex  && \
-pdflatex template-a5-booklet.tex && \
-pdflatex template-a4.tex 
+function test_songbook() {
+  echo "TESTED SONGS ARE:"
+  cat $songs
+  echo "TESTING SONGS ONE BY ONE" > /dev/tty
+  colmode=adaptive
+  cat $songs | 
+  while read file 
+  do
+    test_song
+  done 
+}
 
+function cleanup() {
+  for i in template*pdf template*dvi
+  do
+    mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
+  done
 
-for i in template*pdf template*dvi
-do
-  mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
-done
+  rm -f $songs cbtitle.* *.log content*tex ver.tex
+  ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
+  exit $1
+}
 
+function run() {
+  echo '###########################'
+  echo "PROCESSING SONGBOOK: $name with $head $version IN MODE: $mode" 
+  echo '###########################'
+  case "$mode" in
+    normal)
+      process_songbook
+      cleanup 0
+      ;;
+    test)
+      test_songbook
+      cleanup 0
+      ;;
+  esac
+}
 
-rm $songs cbtitle.* *.log content*tex ver.tex
-ls | grep 'template.*' | grep -v '.tex$' | xargs rm
+read_args $@
+prepare_environment
+run
 
