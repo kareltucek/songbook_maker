@@ -93,7 +93,7 @@ This allows simple creation of difference songbooks for printing. My full build 
 
 Debug
 =====
-Even though I am trying to sanitize inputs as much as possible, the build sometimes fails. If you are not a TEX expert, you may wish to simply limit the number of input songs (like 'find songs | head -n 15 | make_songbook...') in order to find the song which causes problems. When you have it, search for unusual characters and either (if you need them), fix the TEX template in this project or fix the file or add another sanitization into the make_songbook script. 
+Even though I am trying to sanitize inputs as much as possible, the build sometimes fails. In that case, use the '--debug' mode to test compilation of files. When you have the file, search for unclosed braces, unusual characters or other problems and either fix the TEX template in this project or fix the file or add another sanitization into the make_songbook script (...). 
 
 If you are a tex expert, you may wish to meddle with tex. The script basically takes the files and rewrites them into tex notation into two files named content*tex (in project's directory, not in the working directory). Then, latex is executed on one of the templates.
 
