@@ -59,7 +59,9 @@ The script depends on the other files in its relative path, which means that eit
 
 Usage 
 =====
-Invocation expects a name (e.g., a reasonable filename), a version (anything you will want to denote the version) and path to a header tex file. See testdir/head.tex for example content. You will most likely wish to copy it somewhere and change the text. You should not need anything more.
+The preferred way is to copy the <repository root>/testdir folder somewhere and customize the content.
+
+Invocation of the songbook_maker expects a name (e.g., a reasonable filename), a version (anything you will want to denote the version) and path to a header tex file. See testdir/myhead.tex for example content. You will most likely wish to copy it somewhere and change the text. You should not need anything more.
 
 The songs are supposed to be stored in one or more folders in separate files. The scripts accepts them via standard input, which means that it may be invoked as follows:
         
