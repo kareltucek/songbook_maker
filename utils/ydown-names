@@ -1,0 +1,12 @@
+#!/bin/bash
+grep -v '#' | grep '.' | while read line
+do
+    query=$(echo "$line" | tr ' ' '+')
+    url=$(curl "https://www.youtube.com/results?search_query=$query" | grep -o '/watch?v=[^"]*' | head -n 1 | sed 's=^=http://www.youtube.com=')
+    echo 
+    echo
+    echo downloading "$line"
+    echo url: "$url" > /dev/tty
+    youtube-dl --no-playlist --audio-format mp3 --extract-audio -tci "$url"
+done
+

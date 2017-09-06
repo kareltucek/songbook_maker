@@ -1,0 +1,4 @@
+#!/bin/bash
+rm *.mp3
+cat list | ../utils/ydown-names
+
