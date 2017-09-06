@@ -5,6 +5,10 @@ This repository provides scripts which I use to make printable songbooks out of 
 
 *NOTE*: Using content of this repository may be painful without any tex knowledge or without any linux experience!
 
+Dependencies
+============
+Apart from obvious dependencies, this package depends on the tex package https://www.ctan.org/pkg/songs . Under most distributions, it is contained in texlive-music package.
+
 Input
 =====
 
@@ -55,7 +59,7 @@ The script depends on the other files in its relative path, which means that eit
 
 Usage 
 =====
-Invocation expects a name (e.g., a reasonable filename), a version (anything you will want to denote the version) and path to a header tex file. See head.tex for example content. You will most likely wish to copy it somewhere and change the text. You should not need anything more.
+Invocation expects a name (e.g., a reasonable filename), a version (anything you will want to denote the version) and path to a header tex file. See testdir/head.tex for example content. You will most likely wish to copy it somewhere and change the text. You should not need anything more.
 
 The songs are supposed to be stored in one or more folders in separate files. The scripts accepts them via standard input, which means that it may be invoked as follows:
         
