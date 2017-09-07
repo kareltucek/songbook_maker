@@ -19,7 +19,6 @@ adds some further restrictions which should simplify creation of export tools.
 Quick, self-defining example:
 
     ##title: Drunken Sailor
-    ##interpret: Irish Rovers
     ##author: unknown
     ==============
     [Ami]What shall we do with a drunken sailor
@@ -53,7 +52,6 @@ Non-strict definition:
   - Metadata section: Set of records specified one per one line in format
     '##<key>: <value>'. Keys may be:
     - title (compulsory, should be on the first line)
-    - interpret (optional)
     - author (optional)
     - any other fields the user finds desirable, including possible variable
       values for exporting tools and such information. General keywords may be

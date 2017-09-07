@@ -58,11 +58,16 @@ function process_file() {
     cols=$(( ( $colwidth /  $width ) + 1 ))
     [ $colmode == 3cols ] && cols=3
     echo "\\songcolumns{$cols}"
-    cat $file | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | grep -v '^#' | sed 's/[#[]/\\&/g' | awk '
-    BEGIN {first=1;}
-    /===/ {printf("\\beginverse\n"); next}
+    cat $file | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | sed 's/[#[]/\\&/g' | awk '
+    BEGIN {header=1;}
+    /===/ { header = 0; printf("\\beginsong{%s}[by={%s}]\n", title, author); printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title); printf("\\beginverse\n"); next}
     /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
-    // { if(first ==1){first = 0; printf("\\beginsong{%s}\n", $0)} else printf("%s\n", $0) }
+    /^\\#\\#title/ { gsub("^[^:]*:", "", $0); title=$0;}
+    /^\\#\\#author/ { gsub("^[^:]*:", "", $0); author=$0;}
+    /^\\#\\#/ {next;}
+    // { if(header == 1 && title == ""){title = $0};}
+    // { if(header == 1) { next; } }
+    // { printf("%s\n", $0); }
     END { printf("\n\\endverse\n\\endsong\n\n\n"); }
     ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
     [ $mode == "test" ] || printf "\n" > /dev/tty
@@ -123,8 +128,8 @@ function cleanup() {
     mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
   done
 
-  rm -f $songs cbtitle.* *.log content*tex ver.tex
-  ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
+  #rm -f $songs cbtitle.* *.log content*tex ver.tex
+  #ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
   exit $1
 }
 
