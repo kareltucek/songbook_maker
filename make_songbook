@@ -128,8 +128,8 @@ function cleanup() {
     mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
   done
 
-  #rm -f $songs cbtitle.* *.log content*tex ver.tex
-  #ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
+  rm -f $songs cbtitle.* *.log content*tex ver.tex
+  ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
   exit $1
 }
 
