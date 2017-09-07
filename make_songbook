@@ -67,6 +67,7 @@ function process_file() {
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }
+    /^\\#/ {next;}
     // { printf("%s\n", $0); }
     END { printf("\n\\endverse\n\\endsong\n\n\n"); }
     ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
