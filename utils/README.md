@@ -19,3 +19,9 @@ Most of my macros move visually around - for this reason, they need to have some
 Youtube downloader
 =================
 Also, there is a script ydown-names, which takes a list of song names and tries to download relevant mp3 from youtube, using youtube-dl. It simply takes every line and downloads the first youtube-search result.
+
+Velkyzpevnik downloader
+=======================
+Velkyzpevnik.cs is a domain which provides chords for many czech songs. Unlike most other project of this type, its database is big and yet it contains mostly correct chords. The downloader can download entire categories of songs from velkyzpevnik. The result is a bunch of text files - every song in one file. The output has to be further processed using the formatting utils. 
+
+Songs in the expected format may be found at supermusic.sk, which is unfortunatelly quite chaotic for any reasonable processing and often contains incorrect chords.
