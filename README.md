@@ -52,6 +52,21 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 
+example:
+        ##title:Drunken Sailor
+        ##author:unknown
+        ##_narrowcols:3
+        #we believe that such formatted song fits even three columns 
+        ==========
+        [Dm]What'll we do with a 
+        [Dm]drunken sailor,
+        [C]What'll we do with a 
+        [C]drunken sailor,
+        [Dm]What'll we do with a 
+        [Dm]drunken sailor,
+        [F]Early [A7]in the 
+        [Dm]morning?
+
 Output
 ======
 Output is writtent into the working directory and consists of:
