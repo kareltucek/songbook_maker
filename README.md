@@ -53,6 +53,7 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 
 example:
+
         ##title:Drunken Sailor
         ##author:unknown
         ##_narrowcols:3
