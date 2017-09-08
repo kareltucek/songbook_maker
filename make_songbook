@@ -57,13 +57,31 @@ function process_file() {
     [ $width -lt $colwidth -o $width -gt $(( $colwidth + 5 )) ] || printf "... is just a bit over colwidth! ..." > /dev/tty
     cols=$(( ( $colwidth /  $width ) + 1 ))
     [ $colmode == 3cols ] && cols=3
-    echo "\\songcolumns{$cols}"
-    cat $file | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | sed 's/[#[]/\\&/g' | awk '
+    #echo "\\songcolumns{$cols}"
+    (
+      echo "##_autocols:$cols"
+      [ $colmode == 3cols ] && echo "##_widthmode:wide" || echo "##_widthmode:narrow"
+      cat $file 
+    ) | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | sed 's/[#[]/\\&/g' | awk '
     BEGIN {header=1;}
-    /===/ { header = 0; printf("\\beginsong{%s}[by={%s}]\n", title, author); printf("\\phantomsection\n"); printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title); printf("\\beginverse\n"); next}
+    /===/ { 
+      header = 0; 
+      if(widthmode == "narrow" && narrowcols != "") { autocols = narrowcols; };
+      if(widthmode == "wide" && widecols != "") { autocols = widecols; };
+      printf("\\songcolumns{%s}\n", autocols);
+      printf("\\beginsong{%s}[by={%s}]\n", title, author); 
+      printf("\\phantomsection\n"); 
+      printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title); 
+      printf("\\beginverse\n"); 
+      next;
+    }
     /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
     /^\\#\\#title/ { gsub("^[^:]*:", "", $0); title=$0;}
     /^\\#\\#author/ { gsub("^[^:]*:", "", $0); author=$0;}
+    /^\\#\\#_autocols/ { gsub("^[^:]*:", "", $0); autocols=$0;}
+    /^\\#\\#_widthmode/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0); widthmode=$0;}
+    /^\\#\\#_narrowcols/ { gsub("^[^:]*:", "", $0); narrowcols=$0;}
+    /^\\#\\#_widecols/ { gsub("^[^:]*:", "", $0); widecols=$0;}
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }

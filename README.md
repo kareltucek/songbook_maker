@@ -34,6 +34,24 @@ e.g.
 
 Formal definition of format is provided in included FORMAT.md file. The format is meant mainly as a proposal intended for sharing of song databases.
 
+Metadata
+========
+Metadata may be specified in header, i.e., prior to the underline. The syntax is '##<key>:<value>'. Currently supported keys are:
+
+* 'title' - same as specifying song name in plain syntax
+
+* 'author' - author/interpret to be drawn
+
+* '_autocols' (internal) - integer which indicates that the songs fits well into the number of cols 
+
+* '_widthmode' (internal) - indicates width of the page - either 'narrow' (standard 1-2 cols) or 'wide' (3 cols)
+
+* '_narrowcols' - integer - overrides number of columns if widthmode is 'narrow'
+
+* '_widecols' - integer - iverrides number of columns if widthmode is 'wide'
+
+All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
+
 Output
 ======
 Output is writtent into the working directory and consists of:
