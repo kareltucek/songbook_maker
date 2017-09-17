@@ -76,12 +76,12 @@ function process_file() {
       next;
     }
     /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
-    /^\\#\\#title/ { gsub("^[^:]*:", "", $0); title=$0;}
-    /^\\#\\#author/ { gsub("^[^:]*:", "", $0); author=$0;}
-    /^\\#\\#_autocols/ { gsub("^[^:]*:", "", $0); autocols=$0;}
-    /^\\#\\#_widthmode/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0); widthmode=$0;}
-    /^\\#\\#_narrowcols/ { gsub("^[^:]*:", "", $0); narrowcols=$0;}
-    /^\\#\\#_widecols/ { gsub("^[^:]*:", "", $0); widecols=$0;}
+    /^\\#\\#title/ { gsub("^[^:]*:", "", $0); title=$0; next;}
+    /^\\#\\#author/ { gsub("^[^:]*:", "", $0); author=$0; next;}
+    /^\\#\\#_autocols/ { gsub("^[^:]*:", "", $0); autocols=$0; next;}
+    /^\\#\\#_widthmode/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0); widthmode=$0; next;}
+    /^\\#\\#_narrowcols/ { gsub("^[^:]*:", "", $0); narrowcols=$0; next;}
+    /^\\#\\#_widecols/ { gsub("^[^:]*:", "", $0); widecols=$0; next;}
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }
