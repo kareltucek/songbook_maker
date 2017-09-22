@@ -48,7 +48,9 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 
 * '_narrowcols' - integer - overrides number of columns if widthmode is 'narrow'
 
-* '_widecols' - integer - iverrides number of columns if widthmode is 'wide'
+* '_widecols' - integer - overrides number of columns if widthmode is 'wide'
+
+* '_version' - any string meant to denote the version of songbook in which the song was added - is printed in the content and in additional info of a song
 
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 

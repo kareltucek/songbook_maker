@@ -69,11 +69,11 @@ function process_file() {
       if(widthmode == "narrow" && narrowcols != "") { autocols = narrowcols; };
       if(widthmode == "wide" && widecols != "") { autocols = widecols; };
       printf("\\songcolumns{%s}\n", autocols);
-      printf("\\beginsong{%s}[by={%s}]\n", title, author); 
+      printf("\\beginsong{%s}[by={%s%s}]\n", title, version, author); 
       printf("\\phantomsection\n"); 
       /*printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);*/ 
       printf("\\refstepcounter{section}\n");
-      printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", title);
+      printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
       printf("\\beginverse\n"); 
       next;
     }
@@ -84,6 +84,7 @@ function process_file() {
     /^\\#\\#_widthmode/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0); widthmode=$0; next;}
     /^\\#\\#_narrowcols/ { gsub("^[^:]*:", "", $0); narrowcols=$0; next;}
     /^\\#\\#_widecols/ { gsub("^[^:]*:", "", $0); widecols=$0; next;}
+    /^\\#\\#_version/ { gsub("^[^:]*:", "", $0); version=$0 " "; next;}
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }
