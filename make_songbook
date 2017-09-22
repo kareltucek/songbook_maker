@@ -71,7 +71,9 @@ function process_file() {
       printf("\\songcolumns{%s}\n", autocols);
       printf("\\beginsong{%s}[by={%s}]\n", title, author); 
       printf("\\phantomsection\n"); 
-      printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title); 
+      /*printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);*/ 
+      printf("\\refstepcounter{section}\n");
+      printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", title);
       printf("\\beginverse\n"); 
       next;
     }
