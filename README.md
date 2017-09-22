@@ -52,6 +52,10 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 
 * '_version' - any string meant to denote the version of songbook in which the song was added - is printed in the content and in additional info of a song
 
+* '_img_begin' - adds illustration from imgpath at the first page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
+
+* '_img_end' - adds illustration from imgpath at the last page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
+
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 
 example:
@@ -79,8 +83,6 @@ Output is writtent into the working directory and consists of:
 * portrait A5 pdf with one or two columns (this is automatically recognized) 
 
 * booklet A5 pdf (printed from the other A5 pdf)
-
-* the same files in dvi (handy if you want to extract index)
 
 Installation
 ============

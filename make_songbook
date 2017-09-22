@@ -12,6 +12,8 @@ function help() {
   echo ""
   echo "valid options:"
   echo "  --debug        tests songs one by one"
+  echo "  --imgpath      directory containing images"
+  echo "  --nocleanup    do not cleanup workdir - for development purposes"
   exit 1
 }
 
@@ -21,17 +23,33 @@ function read_args() {
     help
   fi
 
-  case $1 in 
-    --debug)
-      mode=test
-      shift
-      ;;
-    *)
-      mode=normal
-      ;;
-  esac
+  finished=0
+  while [ "$finished" == "0" ]
+  do
+    case $1 in 
+      --debug)
+        mode=test
+        shift
+        ;;
+      --imgpath)
+        imgpath=$2
+        echo "setting imgpath to $(realpath "$2")"
+        shift
+        shift
+        ;;
+      --nocleanup)
+        nocleanup=1
+        shift
+        ;;
+      *)
+        mode=normal
+        finished=1
+        ;;
+    esac
+  done
 
   workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
+  [ "$imgpath" == "" ] || imgpath=`realpath "$imgpath"`
   origdir=`pwd`
   outdir=`pwd`
 
@@ -47,6 +65,7 @@ function prepare_environment() {
   echo "$version" > $workdir/ver.tex
   cat "$head" > $workdir/head.tex
   cd "$workdir"
+  [ "$imgpath" == "" ] || ln -s "$imgpath" imgpath
 }
 
 function process_file() {
@@ -71,9 +90,10 @@ function process_file() {
       printf("\\songcolumns{%s}\n", autocols);
       printf("\\beginsong{%s}[by={%s%s}]\n", title, version, author); 
       printf("\\phantomsection\n"); 
-      /*printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);*/ 
+      #printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);
       printf("\\refstepcounter{section}\n");
       printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
+      if(img1 != "" && widthmode == "narrow") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
       printf("\\beginverse\n"); 
       next;
     }
@@ -85,12 +105,24 @@ function process_file() {
     /^\\#\\#_narrowcols/ { gsub("^[^:]*:", "", $0); narrowcols=$0; next;}
     /^\\#\\#_widecols/ { gsub("^[^:]*:", "", $0); widecols=$0; next;}
     /^\\#\\#_version/ { gsub("^[^:]*:", "", $0); version=$0 " "; next;}
+    /^\\#\\#_img_begin/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img1=$0; next;}
+    /^\\#\\#_img_end/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img2=$0; next;}
+    /^\\#\\#_clearpage/ { clear=1; }
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }
     /^\\#/ {next;}
     // { printf("%s\n", $0); }
-    END { printf("\n\\endverse\n\\endsong\n\n\n"); }
+    END { 
+      printf("\n\\endverse\n");
+      printf("\\endsong\n\n\n"); 
+      if(img2 != "" && widthmode == "narrow") { 
+        printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}}", img2); 
+      }
+      if(clear == 1) {
+        printf("\\clearpage");
+      }
+    }
     ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
     [ $mode == "test" ] || printf "\n" > /dev/tty
   else
@@ -110,7 +142,12 @@ function process_songbook() {
     done > "$workdir/content-$colmode.tex"
   done
 
-  latex template-a5.tex  || cleanup 1
+  ls
+  #not compatible with images 
+  #latex template-a5.tex  || cleanup 1
+  
+  #the first pdflatex takes care of hyperling preprocessing
+  pdflatex template-a5.tex  || cleanup 1
   pdflatex template-a5.tex  || cleanup 1
   pdflatex template-a5-booklet.tex || cleanup 1
   pdflatex template-a4.tex || cleanup 1
@@ -145,12 +182,18 @@ function test_songbook() {
 }
 
 function cleanup() {
+  if [ "$nocleanup" == "1" ]
+  then
+    return
+  fi
+  echo "CLEANING UP"
   for i in template*pdf template*dvi
   do
     mv $i "$outdir/$(echo "$i" | sed 's/template/'"$name"'/g;')"
   done
 
   rm -f $songs cbtitle.* *.log content*tex ver.tex
+  rm imgpath
   ls | grep 'template.*' | grep -v '.tex$' | xargs rm -f
   exit $1
 }
