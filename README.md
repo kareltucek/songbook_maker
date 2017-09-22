@@ -52,9 +52,11 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 
 * '_version' - any string meant to denote the version of songbook in which the song was added - is printed in the content and in additional info of a song
 
-* '_img_begin' - adds illustration from imgpath at the first page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
+* '_imgbegin' - adds illustration from imgpath at the first page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
 
-* '_img_end' - adds illustration from imgpath at the last page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
+* '_imgend' - adds illustration from imgpath at the last page of the song (as a background scaled to the entire page), --imgpath required, only in narrow mode
+
+* '_clearpage' - clears page after the song (usefull for illustrations)
 
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 

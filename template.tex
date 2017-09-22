@@ -6,8 +6,6 @@
 \usepackage[margin=0.2in]{geometry}
 \usepackage[bookmarks]{hyperref}
 \usepackage[chorded]{songs}
-%\usepackage{tikz}
-\usepackage[section]{placeins}
 \usepackage{eso-pic,graphicx}
 
 \newindex{titleidx}{cbtitle}
@@ -20,27 +18,11 @@
 
 \renewcommand{\contentsname}{Obsah}
 
+\newenvironment{bottompar}{\par\vspace*{\fill}}{\clearpage}
+
 \setlength{\sbarheight}{0pt}
 
 \versesep=12pt plus 6pt minus 6pt
-
-%\makeatletter
-%\renewcommand\beginsong[1]{%
-%  \ifSB@insong\SB@errboo\SB@closeall\fi%
-%  \ifSB@intersong\SB@errbor\SB@closeall\fi%
-%  \SB@insongtrue%
-%  \def\SB@closeall{\endsong}%
-%  \SB@parsetitles{#1}%
-%  \global\setbox\SB@songwrites\box\voidb@x%
-%  \SB@clearbskeys%
-%  \@ifnextchar[\SB@bskvfmt\SB@@beginsong%
-%  \hypersetup{bookmarksdepth=0}%
-%  \phantomsection%
-%  \addcontentsline{toc}{subsection}{\numberline{\thesongnum}#1}%
-%  \hypersetup{bookmarksdepth=2}%
-%}
-%\makeatother
-
 
 \input{head}
 
@@ -48,15 +30,12 @@
 
 \begin{document}
 \setlength\baselineadj{-\baselineskip}
+
 \maketitle
-
 \tableofcontents
-
-\paragraph{Úvod}
-
+\clearpage
 \introduction
-
-\vfill
+\clearpage
 
 \begin{songs}{titleidx}
 
