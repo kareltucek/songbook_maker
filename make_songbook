@@ -14,6 +14,7 @@ function help() {
   echo "  --debug        tests songs one by one"
   echo "  --imgpath      directory containing images"
   echo "  --nocleanup    do not cleanup workdir - for development purposes"
+  echo "  --doublesided  use margins for bookbinding"
   exit 1
 }
 
@@ -41,6 +42,10 @@ function read_args() {
         nocleanup=1
         shift
         ;;
+      --doublesided)
+        doublesided=1
+        shift
+        ;;
       *)
         mode=normal
         finished=1
@@ -56,7 +61,7 @@ function read_args() {
   name="$1"
   head="$2"
   version="$3"
-  colwidth=45
+  colwidth=42
   songs=`mktemp`
 }
 
@@ -148,6 +153,13 @@ function process_songbook() {
   
   #the first pdflatex takes care of hyperling preprocessing
   pdflatex template-a5.tex  || cleanup 1
+  if [ "$doublesided" == "1" ]
+    then
+      echo "PRINTING DOUBLESIDED" > /dev/tty
+    pdflatex template-a5-doublesided.tex  || cleanup 1
+    pdflatex template-a5-doublesided.tex  || cleanup 1
+    pdflatex template-a5-booklet-doublesided.tex  || cleanup 1
+  fi
   pdflatex template-a5.tex  || cleanup 1
   pdflatex template-a5-booklet.tex || cleanup 1
   pdflatex template-a4.tex || cleanup 1

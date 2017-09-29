@@ -1,0 +1,26 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{color,graphicx,epsfig}
+\usepackage[final]{pdfpages}
+\usepackage{intcalc}
+\input{head}
+\begin{document}
+
+
+\pdfximage{template-a5-doublesided.pdf}
+\newcommand{\mypc}{
+\the\pdflastximagepages
+}
+
+\newcounter{m}
+\setcounter{m}{ \mypc }
+\newcounter{n}
+%\setcounter{n}{\intcalcMul{\intcalcMod{\intcalcSub{1}{\the\value{m}}}{4}}{4}}
+\setcounter{n}{\intcalcMul{\intcalcAdd{1}{\intcalcDiv{\intcalcSub{\the\value{m}}{1}}{4}}}{4}}
+\newcounter{n2}
+\setcounter{n2}{\intcalcAdd{1}{\intcalcDiv{\intcalcSub{\the\value{m}}{1}}{4}}}
+\newcounter{n3}
+\setcounter{n3}{\intcalcDiv{ \intcalcSub{\the\value{m}}{1} }{4} }
+
+\includepdf[pages=-,nup=1x2,landscape,signature=\the\value{n}]{template-a5-doublesided.pdf}
+\end{document}
+
