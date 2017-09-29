@@ -5,7 +5,7 @@
 \input{head}
 \begin{document}
 
-\pdfximage{template-a5-doublesided.pdf}
+\pdfximage{template-a5-book.pdf}
 \newcommand{\mypc}{
 \the\pdflastximagepages
 }
@@ -20,6 +20,6 @@
 \newcounter{n3}
 \setcounter{n3}{\intcalcDiv{ \intcalcSub{\the\value{m}}{1} }{4} }
 
-\includepdf[pages=-,nup=1x2,landscape,signature=\the\value{n}]{template-a5-doublesided.pdf}
+\includepdf[pages=-,nup=1x2,landscape,signature=\the\value{n}]{template-a5-book.pdf}
 \end{document}
 

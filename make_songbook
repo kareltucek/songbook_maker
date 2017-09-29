@@ -14,7 +14,7 @@ function help() {
   echo "  --debug        tests songs one by one"
   echo "  --imgpath      directory containing images"
   echo "  --nocleanup    do not cleanup workdir - for development purposes"
-  echo "  --doublesided  use margins for bookbinding"
+  echo "  --style        {compact|compact-doublesided|book|a4}" 
   exit 1
 }
 
@@ -25,6 +25,7 @@ function read_args() {
   fi
 
   finished=0
+  style=""
   while [ "$finished" == "0" ]
   do
     case $1 in 
@@ -46,12 +47,38 @@ function read_args() {
         doublesided=1
         shift
         ;;
+      --style)
+        case "$2" in 
+          compact)
+            templates="$templates template-a5 template-a5-booklet"
+            colmodes=adaptive
+            colwidth=42
+            ;;
+          compact-doublesided)
+            templates="$templates template-a5-doublesided template-a5-booklet-doublesided"
+            colmodes=adaptive
+            colwidth=42
+            ;;
+          book)
+            templates="$templates template-a5-book template-a5-booklet-book"
+            colmodes=adaptive
+            colwidth=35
+            ;;
+          a4)
+            templates="$templates template-a4"
+            colmodes=3cols
+            colwidth=35
+        esac
+        shift
+        shift
+        ;;
       *)
         mode=normal
         finished=1
         ;;
     esac
   done
+  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=42 && colmodes=adaptive
 
   workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
   [ "$imgpath" == "" ] || imgpath=`realpath "$imgpath"`
@@ -61,7 +88,8 @@ function read_args() {
   name="$1"
   head="$2"
   version="$3"
-  colwidth=42
+  #colwidth=35
+  #colwidth=30
   songs=`mktemp`
 }
 
@@ -96,9 +124,9 @@ function process_file() {
       printf("\\songcolumns{%s}\n", autocols);
       printf("\\beginsong{%s}[by={%s%s}]\n", title, version, author); 
       printf("\\phantomsection\n"); 
-      #printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);
-      printf("\\refstepcounter{section}\n");
-      printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
+      printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);
+      #printf("\\refstepcounter{section}\n");
+      #printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
       if(img1 != "" && widthmode == "narrow") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
       printf("\\beginverse\n"); 
       next;
@@ -140,7 +168,7 @@ function process_file() {
 }
 
 function process_songbook() {
-  for colmode in 3cols adaptive
+  for colmode in $colmodes
   do
     echo "PROCESSING MODE $colmode" > /dev/tty
     echo "WRITTING CONTENT INTO $workdir/content-$colmode.tex" > /dev/tty
@@ -155,18 +183,17 @@ function process_songbook() {
   #not compatible with images 
   #latex template-a5.tex  || cleanup 1
   
-  #the first pdflatex takes care of hyperling preprocessing
-  pdflatex template-a5.tex  || cleanup 1
-  if [ "$doublesided" == "1" ]
-    then
-      echo "PRINTING DOUBLESIDED" > /dev/tty
-    pdflatex template-a5-doublesided.tex  || cleanup 1
-    pdflatex template-a5-doublesided.tex  || cleanup 1
-    pdflatex template-a5-booklet-doublesided.tex  || cleanup 1
-  fi
-  pdflatex template-a5.tex  || cleanup 1
-  pdflatex template-a5-booklet.tex || cleanup 1
-  pdflatex template-a4.tex || cleanup 1
+  build_pdfs $templates
+}
+
+function build_pdfs() {
+  #the first pdflatex takes care of hyperlink preprocessing
+  pdflatex $1
+  while [ $# -gt 0 ] 
+  do
+    pdflatex $1 || cleanup 1
+    shift
+  done
 }
 
 function test_song() {
