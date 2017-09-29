@@ -121,13 +121,15 @@ function process_file() {
     /^\\#/ {next;}
     // { printf("%s\n", $0); }
     END { 
-      printf("\n\\endverse\n");
-      printf("\\endsong\n\n\n"); 
-      if(img2 != "" && widthmode == "narrow") { 
-        printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}}", img2); 
-      }
-      if(clear == 1) {
-        printf("\\clearpage");
+      if ( ignore != 1 ) {
+        printf("\n\\endverse\n");
+        printf("\\endsong\n\n\n"); 
+        if(img2 != "" && widthmode == "narrow") { 
+          printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}}", img2); 
+        }
+        if(clear == 1) {
+          printf("\\clearpage");
+        }
       }
     }
     ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
