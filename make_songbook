@@ -88,6 +88,7 @@ function process_file() {
       cat $file 
     ) | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | sed 's/[#[]/\\&/g' | awk '
     BEGIN {header=1;}
+    // { if (ignore == 1){ next; } }
     /===/ { 
       header = 0; 
       if(widthmode == "narrow" && narrowcols != "") { autocols = narrowcols; };
@@ -113,6 +114,7 @@ function process_file() {
     /^\\#\\#_imgbegin/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img1=$0; next;}
     /^\\#\\#_imgend/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img2=$0; next;}
     /^\\#\\#_clearpage/ { clear=1; }
+    /^\\#\\#_ignore/ { ignore=1; }
     /^\\#\\#/ {next;}
     // { if(header == 1 && title == ""){title = $0};}
     // { if(header == 1) { next; } }

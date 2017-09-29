@@ -58,6 +58,8 @@ Metadata may be specified in header, i.e., prior to the underline. The syntax is
 
 * '_clearpage' - clears page after the song (usefull for illustrations)
 
+* '_ignore' - skip the entire song
+
 All the above keys may be overriden, however, only those not marked as internal are supposed to be overriden!
 
 example:
@@ -85,6 +87,8 @@ Output is writtent into the working directory and consists of:
 * portrait A5 pdf with one or two columns (this is automatically recognized) 
 
 * booklet A5 pdf (printed from the other A5 pdf)
+
+* if `--doublesided` option is specified, then the same poratrait and booklet A5 in double sided setup - these provide an extended 10 mm binding offset (margin at the inner side) and clear pages in order to keep songs on neighbouring sides.
 
 Installation
 ============
