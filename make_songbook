@@ -53,21 +53,25 @@ function read_args() {
             templates="$templates template-a5 template-a5-booklet"
             colmodes=adaptive
             colwidth=42
+            pagenumstyle=numbers
             ;;
           compact-doublesided)
             templates="$templates template-a5-doublesided template-a5-booklet-doublesided"
             colmodes=adaptive
             colwidth=42
+            pagenumstyle=numbers
             ;;
           book)
             templates="$templates template-a5-book template-a5-booklet-book"
             colmodes=adaptive
             colwidth=35
+            pagenumstyle=pages
             ;;
           a4)
             templates="$templates template-a4"
             colmodes=3cols
             colwidth=35
+            pagenumstyle=numbers
         esac
         shift
         shift
@@ -78,7 +82,7 @@ function read_args() {
         ;;
     esac
   done
-  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=42 && colmodes=adaptive
+  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=42 && colmodes=adaptive && pagenumstyle=numbers
 
   workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
   [ "$imgpath" == "" ] || imgpath=`realpath "$imgpath"`
@@ -124,9 +128,16 @@ function process_file() {
       printf("\\songcolumns{%s}\n", autocols);
       printf("\\beginsong{%s}[by={%s%s}]\n", title, version, author); 
       printf("\\phantomsection\n"); 
-      printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);
-      #printf("\\refstepcounter{section}\n");
-      #printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
+      if ("'"$pagenumstyle"'" == "pages") {
+        printf("\\addcontentsline{toc}{subsection}{%s}\n", title);
+      }
+      if ("'"$pagenumstyle"'" == "both") {
+        printf("\\addcontentsline{toc}{subsection}{\\numberline{\\thesongnum}%s}\n", title);
+      }
+      if ("'"$pagenumstyle"'" == "numbers") {
+        printf("\\refstepcounter{section}\n");
+        printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
+      }
       if(img1 != "" && widthmode == "narrow") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
       printf("\\beginverse\n"); 
       next;
