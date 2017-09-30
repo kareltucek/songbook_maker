@@ -52,13 +52,13 @@ function read_args() {
           compact)
             templates="$templates template-a5 template-a5-booklet"
             colmodes=adaptive
-            colwidth=42
+            colwidth=43
             pagenumstyle=numbers
             ;;
           compact-doublesided)
             templates="$templates template-a5-doublesided template-a5-booklet-doublesided"
             colmodes=adaptive
-            colwidth=42
+            colwidth=43
             pagenumstyle=numbers
             ;;
           book)
@@ -82,7 +82,7 @@ function read_args() {
         ;;
     esac
   done
-  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=42 && colmodes=adaptive && pagenumstyle=numbers
+  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=43 && colmodes=adaptive && pagenumstyle=numbers
 
   workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
   [ "$imgpath" == "" ] || imgpath=`realpath "$imgpath"`
