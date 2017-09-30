@@ -190,7 +190,6 @@ function process_songbook() {
     done > "$workdir/content-$colmode.tex"
   done
 
-  ls
   #not compatible with images 
   #latex template-a5.tex  || cleanup 1
   
