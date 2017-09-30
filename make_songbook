@@ -82,7 +82,7 @@ function read_args() {
         ;;
     esac
   done
-  [ style == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=43 && colmodes=adaptive && pagenumstyle=numbers
+  [ "$style" == "" ] && style=compact && templates="template-a5 template-a5-booklet" && colwidth=43 && colmodes=adaptive && pagenumstyle=numbers
 
   workdir=$(realpath "$0" | sed 's=/[^/]*$==g')
   [ "$imgpath" == "" ] || imgpath=`realpath "$imgpath"`
