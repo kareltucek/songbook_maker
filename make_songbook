@@ -50,28 +50,36 @@ function read_args() {
       --style)
         case "$2" in 
           compact)
+            style="$2"
             templates="$templates template-a5 template-a5-booklet"
             colmodes=adaptive
             colwidth=43
             pagenumstyle=numbers
             ;;
           compact-doublesided)
+            style="$2"
             templates="$templates template-a5-doublesided template-a5-booklet-doublesided"
             colmodes=adaptive
             colwidth=43
             pagenumstyle=numbers
             ;;
           book)
+            style="$2"
             templates="$templates template-a5-book template-a5-booklet-book"
             colmodes=adaptive
             colwidth=35
             pagenumstyle=pages
             ;;
           a4)
+            style="$2"
             templates="$templates template-a4"
             colmodes=3cols
             colwidth=35
             pagenumstyle=numbers
+            ;;
+          *)
+            echo "STYLE '$style' NOT VALID"
+            ;;
         esac
         shift
         shift
