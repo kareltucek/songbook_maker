@@ -15,6 +15,7 @@ function help() {
   echo "  --imgpath      directory containing images"
   echo "  --nocleanup    do not cleanup workdir - for development purposes"
   echo "  --style        {compact|compact-doublesided|book|a4}" 
+  echo "  --noimg        skips images in the output" 
   exit 1
 }
 
@@ -41,6 +42,10 @@ function read_args() {
         ;;
       --nocleanup)
         nocleanup=1
+        shift
+        ;;
+      --noimg)
+        noimg=1
         shift
         ;;
       --doublesided)
@@ -146,8 +151,8 @@ function process_file() {
         printf("\\refstepcounter{section}\n");
         printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
       }
-      if(img1 != "" && widthmode == "narrow") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
       printf("\\beginverse\n"); 
+      if(img1 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
       next;
     }
     /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
@@ -171,7 +176,7 @@ function process_file() {
       if ( ignore != 1 ) {
         printf("\n\\endverse\n");
         printf("\\endsong\n\n\n"); 
-        if(img2 != "" && widthmode == "narrow") { 
+        if(img2 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { 
           printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}}", img2); 
         }
         if(clear == 1) {
