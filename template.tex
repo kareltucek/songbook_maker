@@ -6,6 +6,30 @@
 %\usepackage[margin=0.2in]{geometry}
 \usepackage[bookmarks]{hyperref}
 \usepackage{eso-pic,graphicx}
+%\usepackage[]{placeins}
+%\usepackage{tikz}
+%\usepackage[pages=some,scale=1,angle=0,opacity=0.7]{background}
+%\usepackage{graphicx}
+
+
+%uncomment to add corner marks
+%\usepackage[
+%  % set width and height to a4 width and height + 6mm
+%  width=14.8truecm, height=21truecm,
+%  % use any combination of these options to add different cut markings
+%  cam, axes, frame, cross,
+%  % set the type of TeX renderer you use
+%  pdftex,
+%  % center the contents
+%  center
+%]{crop}
+
+\newcommand\BackImage[2][scale=1]{% 
+  \BgThispage
+  \backgroundsetup{
+      contents={\includegraphics[#1]{#2}}
+  }
+}
 
 \newindex{titleidx}{cbtitle}
 

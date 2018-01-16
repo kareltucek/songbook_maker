@@ -16,6 +16,8 @@ function help() {
   echo "  --nocleanup    do not cleanup workdir - for development purposes"
   echo "  --style        {compact|compact-doublesided|book|a4}" 
   echo "  --noimg        skips images in the output" 
+  echo "  --placeholders replaces images by simple placeholders - for testing purposes" 
+  echo "  --ignored      process even songs marked as ignored"
   exit 1
 }
 
@@ -25,11 +27,22 @@ function read_args() {
     help
   fi
 
+  ignored=0
   finished=0
   style=""
+  imgstring="imgpath/%s"
   while [ "$finished" == "0" ]
   do
     case $1 in 
+      --ignored)
+        ignored=1
+        shift
+        ;;
+      --placeholders)
+        placeholders=1
+        imgstring="placeholder.png"
+        shift
+        ;;
       --debug)
         mode=test
         shift
@@ -133,12 +146,13 @@ function process_file() {
       cat $file 
     ) | tr '\n\t' '\t\n' | sed 's/\t\t\t*/\t\t/g' | tr '\n\t' '\t\n' | sed 's/[#[]/\\&/g' | awk '
     BEGIN {header=1;}
-    // { if (ignore == 1){ next; } }
+    // { if (ignore == 1 && '"$ignored"' != 1){ next; } }
     /===/ { 
       header = 0; 
       if(widthmode == "narrow" && narrowcols != "") { autocols = narrowcols; };
       if(widthmode == "wide" && widecols != "") { autocols = widecols; };
       printf("\\songcolumns{%s}\n", autocols);
+      #printf("\\begin{songgroup}"); 
       printf("\\beginsong{%s}[by={%s%s}]\n", title, version, author); 
       printf("\\phantomsection\n"); 
       if ("'"$pagenumstyle"'" == "pages") {
@@ -152,7 +166,9 @@ function process_file() {
         printf("\\addtocontents{toc}{%%\n\\protect\\contentsline{subsection}{%s%s}{\\numberline{\\thesongnum}}{section.\\thesection}}", version, title);
       }
       printf("\\beginverse\n"); 
-      if(img1 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}};", img1); }
+      if(img1 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { 
+        printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{'"$imgstring"'}};", img1); 
+      }
       next;
     }
     /^ *$/ {printf("\\endverse\n\\beginverse\n"); next}
@@ -165,6 +181,7 @@ function process_file() {
     /^\\#\\#_version/ { gsub("^[^:]*:", "", $0); version=$0 " "; next;}
     /^\\#\\#_imgbegin/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img1=$0; next;}
     /^\\#\\#_imgend/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img2=$0; next;}
+    /^\\#\\#_imgafter/ { gsub("^[^:]*:", "", $0); gsub("  *$", "", $0);gsub("^  *", "", $0);img3=$0; next;}
     /^\\#\\#_clearpage/ { clear=1; }
     /^\\#\\#_ignore/ { ignore=1; }
     /^\\#\\#/ {next;}
@@ -173,15 +190,22 @@ function process_file() {
     /^\\#/ {next;}
     // { printf("%s\n", $0); }
     END { 
-      if ( ignore != 1 ) {
+      if ( ignore != 1 || '"$ignored"' == 1) {
         printf("\n\\endverse\n");
         printf("\\endsong\n\n\n"); 
         if(img2 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { 
-          printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{imgpath/%s}}", img2); 
+          printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{'"$imgstring"'}}", img2); 
         }
         if(clear == 1) {
           printf("\\clearpage");
         }
+        if(img3 != "" && widthmode == "narrow" && "'"$noimg"'" != "1") { 
+          printf("\\begin{intersong*}\n"); 
+          printf("\\centerline{\\includegraphics[width=\\textwidth,height=\\textheight]{'"$imgstring"'}}", img3); 
+          #printf("\\AddToShipoutPictureBG*{\\includegraphics[width=\\paperwidth,height=\\paperheight]{'"$imgstring"'}}", img3); 
+          printf("\\end{intersong*}\n"); 
+        }
+        #printf("\\end{songgroup}"); 
       }
     }
     ' | sed 's/&apos;/'"'"'/g;s/&quot;/"/g;s/[`´]/'"'"'/g;s/„/"/g;'
