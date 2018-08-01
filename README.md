@@ -3,7 +3,7 @@ Songbook maker
 
 This repository provides scripts which I use to make printable songbooks out of songs using latex package.
 
-*NOTE*: Using content of this repository may be painful without any tex knowledge or without any linux experience!
+*NOTE*: Using content of this repository may be painful without any tex knowledge or without any linux experience! In case of troubles, feel free to contact me...
 
 Dependencies
 ============
