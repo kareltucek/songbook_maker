@@ -95,6 +95,13 @@ function read_args() {
             colwidth=35
             pagenumstyle=numbers
             ;;
+          a4-portrait)
+            style="$2"
+            templates="$templates template-a4-portrait"
+            colmodes=adaptive
+            colwidth=58
+            pagenumstyle=numbers
+            ;;
           *)
             echo "STYLE '$style' NOT VALID"
             ;;
