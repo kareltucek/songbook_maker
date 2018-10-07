@@ -1,0 +1,188 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+then
+  echo "syntax: transpose <no of halftones to add> {H|B} {sharps|flats} <filename>"
+  echo ""
+  echo "transposes brace notation (e.g., '[Dmi]What shall we do...'"
+  exit
+fi
+
+mode=$2
+sharpmode=$3
+origfn="$4"
+fn=`mktemp`
+cp "$origfn" "$fn"
+fn2=`mktemp`
+
+for i in `seq $1`
+do
+  cat "$fn" | sed 's/[[]/[!/g' |
+  (
+  case $mode in 
+  H)
+    #uppercase sharp
+    sed 's/[[]!A#/[H/g' |
+    sed 's/[[]!B#/[C/g' |
+    sed 's/[[]!H#/[C#/g' |
+    sed 's/[[]!C#/[D/g' |
+    sed 's/[[]!D#/[E/g' |
+    sed 's/[[]!E#/[F#/g' |
+    sed 's/[[]!F#/[G/g' |
+    sed 's/[[]!G#/[A/g' |
+    #lowercase sharp
+    sed 's/[[]!a#/[h/g' |
+    sed 's/[[]!b#/[c/g' |
+    sed 's/[[]!h#/[c#/g' |
+    sed 's/[[]!c#/[d/g' |
+    sed 's/[[]!d#/[e/g' |
+    sed 's/[[]!e#/[f#/g' |
+    sed 's/[[]!f#/[g/g' |
+    sed 's/[[]!g#/[a/g' |
+    #uppercase flat
+    sed 's/[[]!Ab/[G/g' |
+    sed 's/[[]!Bb/[Ab/g' |
+    sed 's/[[]!Hb/[A/g' |
+    sed 's/[[]!Cb/[B/g' |
+    sed 's/[[]!Db/[C/g' |
+    sed 's/[[]!Eb/[D/g' |
+    sed 's/[[]!Fb/[Eb/g' |
+    sed 's/[[]!Gb/[F/g' |
+    #lowercase flat
+    sed 's/[[]!ab/[g/g' |
+    sed 's/[[]!bb/[ab/g' |
+    sed 's/[[]!hb/[a/g' |
+    sed 's/[[]!cb/[b/g' |
+    sed 's/[[]!db/[c/g' |
+    sed 's/[[]!eb/[d/g' |
+    sed 's/[[]!fb/[eb/g' |
+    sed 's/[[]!gb/[f/g' |
+    #uppercase
+    ( 
+    case $sharpmode in
+    sharps)
+      sed 's/[[]!A/[A#/g' |
+      sed 's/[[]!B/[H/g' |
+      sed 's/[[]!H/[C/g' |
+      sed 's/[[]!C/[C#/g' |
+      sed 's/[[]!D/[D#/g' |
+      sed 's/[[]!E/[F/g' |
+      sed 's/[[]!F/[F#/g' |
+      sed 's/[[]!G/[G#/g' |
+      #lowercase
+      sed 's/[[]!a/[a#/g' |
+      sed 's/[[]!b/[h/g' |
+      sed 's/[[]!h/[c/g' |
+      sed 's/[[]!c/[c#/g' |
+      sed 's/[[]!d/[d#/g' |
+      sed 's/[[]!e/[f/g' |
+      sed 's/[[]!f/[f#/g' |
+      sed 's/[[]!g/[g#/g'
+      ;;
+    flats)
+      sed 's/[[]!A/[B/g' |
+      sed 's/[[]!B/[H/g' |
+      sed 's/[[]!H/[C/g' |
+      sed 's/[[]!C/[Db/g' |
+      sed 's/[[]!D/[Eb/g' |
+      sed 's/[[]!E/[F/g' |
+      sed 's/[[]!F/[Gb/g' |
+      sed 's/[[]!G/[Ab/g' |
+      #lowercase
+      sed 's/[[]!a/[b/g' |
+      sed 's/[[]!b/[h/g' |
+      sed 's/[[]!h/[c/g' |
+      sed 's/[[]!c/[db/g' |
+      sed 's/[[]!d/[eb/g' |
+      sed 's/[[]!e/[f/g' |
+      sed 's/[[]!f/[gb/g' |
+      sed 's/[[]!g/[ab/g'
+      ;;
+    esac
+    )
+  ;;
+  B)
+    cat "$fn" | sed 's/[[]/[!/g' |
+    #uppercase sharp
+    sed 's/[[]!A#/[B/g' |
+    sed 's/[[]!B#/[C#/g' |
+    sed 's/[[]!C#/[D/g' |
+    sed 's/[[]!D#/[E/g' |
+    sed 's/[[]!E#/[F#/g' |
+    sed 's/[[]!F#/[G/g' |
+    sed 's/[[]!G#/[A/g' |
+    #lowercase sharp
+    sed 's/[[]!a#/[b/g' |
+    sed 's/[[]!b#/[c#/g' |
+    sed 's/[[]!c#/[d/g' |
+    sed 's/[[]!d#/[e/g' |
+    sed 's/[[]!e#/[f#/g' |
+    sed 's/[[]!f#/[g/g' |
+    sed 's/[[]!g#/[a/g' |
+    #uppercase flat
+    sed 's/[[]!Ab/[G/g' |
+    sed 's/[[]!Bb/[A/g' |
+    sed 's/[[]!Cb/[B/g' |
+    sed 's/[[]!Db/[C/g' |
+    sed 's/[[]!Eb/[D/g' |
+    sed 's/[[]!Fb/[Eb/g' |
+    sed 's/[[]!Gb/[F/g' |
+    #lowercase flat
+    sed 's/[[]!ab/[g/g' |
+    sed 's/[[]!bb/[a/g' |
+    sed 's/[[]!cb/[b/g' |
+    sed 's/[[]!db/[c/g' |
+    sed 's/[[]!eb/[d/g' |
+    sed 's/[[]!fb/[eb/g' |
+    sed 's/[[]!gb/[f/g' |
+    #uppercase
+    ( 
+    case $sharpmode in
+    sharps)
+      sed 's/[[]!A/[A#/g' |
+      sed 's/[[]!B/[C/g' |
+      sed 's/[[]!C/[C#/g' |
+      sed 's/[[]!D/[D#/g' |
+      sed 's/[[]!E/[F/g' |
+      sed 's/[[]!F/[F#/g' |
+      sed 's/[[]!G/[G#/g' |
+      #lowercase
+      sed 's/[[]!a/[a#/g' |
+      sed 's/[[]!b/[c/g' |
+      sed 's/[[]!c/[c#/g' |
+      sed 's/[[]!d/[d#/g' |
+      sed 's/[[]!e/[f/g' |
+      sed 's/[[]!f/[f#/g' |
+      sed 's/[[]!g/[g#/g'
+      ;;
+    flats)
+      sed 's/[[]!A/[Bb/g' |
+      sed 's/[[]!B/[C/g' |
+      sed 's/[[]!C/[Db/g' |
+      sed 's/[[]!D/[Eb/g' |
+      sed 's/[[]!E/[F/g' |
+      sed 's/[[]!F/[Gb/g' |
+      sed 's/[[]!G/[Ab/g' |
+      #lowercase
+      sed 's/[[]!a/[bb/g' |
+      sed 's/[[]!b/[c/g' |
+      sed 's/[[]!c/[db/g' |
+      sed 's/[[]!d/[eb/g' |
+      sed 's/[[]!e/[f/g' |
+      sed 's/[[]!f/[gb/g' |
+      sed 's/[[]!g/[ab/g' 
+      ;;
+    esac
+    )
+  ;;
+  esac
+  ) > "$fn2"
+
+  rm "$fn"
+  fn="$fn2"
+  fn2=`mktemp`
+done
+
+mv "$fn" "${origfn}_transposed"
+
+
